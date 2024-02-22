@@ -1,0 +1,135 @@
+// View
+@extends('admin.share.master')
+@section('content')
+
+@endsection
+@section('js')
+<script>
+    new Vue({
+        el      :  '#app',
+        data    :  {
+
+        },
+        created() {
+
+        },
+        methods :   {
+            date_format(now) {
+                return moment(now).format('DD/MM/yyyy');
+            },
+            number_format(number, decimals = 2, dec_point = ",", thousands_sep = ".") {
+                var n = number,
+                c = isNaN((decimals = Math.abs(decimals))) ? 2 : decimals;
+                var d = dec_point == undefined ? "," : dec_point;
+                var t = thousands_sep == undefined ? "." : thousands_sep,
+                    s = n < 0 ? "-" : "";
+                var i = parseInt((n = Math.abs(+n || 0).toFixed(c))) + "",
+                    j = (j = i.length) > 3 ? j % 3 : 0;
+
+                return (s +(j ? i.substr(0, j) + t : "") +i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) +(c? d +
+                        Math.abs(n - i)
+                            .toFixed(c)
+                            .slice(2)
+                        : "")
+                );
+            },
+        }
+    });
+</script>
+@endsection
+
+//Card
+<div class="card border-primary border-bottom border-3 border-0">
+    <div class="card-header mt-3 mb-3">
+        <div class="row">
+            <div class="col mt-2">
+                <h6>Thêm Mới Quyền</h6>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+
+    </div>
+    <div class="card-footer">
+
+    </div>
+</div>
+
+// Modal
+data-bs-toggle="modal" data-bs-target="#createKhoaHoc"
+
+<div class="modal fade" id="createKhoaHoc" tabindex="-1" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm Mới Khoá Học</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+// input
+<div class="col-md-6">
+    <label class="form-label">First Name</label>
+    <input type="email" class="form-control">
+</div>
+
+// selected
+<div class="col-md-6">
+    <label class="form-label">Last Name</label>
+    <select class="form-select">
+        <option selected="">Choose...</option>
+        <option>...</option>
+    </select>
+</div>
+
+
+//text area
+<div class="col-12">
+    <label class="form-label">Address</label>
+    <textarea class="form-control" placeholder="Address..." rows="3"></textarea>
+</div>
+
+
+// axios post
+axios
+    .post('/admin/khoa-hoc/create', this.add)
+    .then((res) => {
+        displaySuccess(res);
+    })
+    .catch((err) => {
+        displayErrors(err);
+    });
+
+// axios get
+axios
+    .get('/admin/khoa-hoc/data')
+    .then((res) => {
+        this.list = res.data.data;
+    });
+
+v-for="(value, index) in list" :key="index"
+
+// Vue format
+@{{ date_format(value.created_at) }}
+@{{ number_format(value.hoc_phi_theo_thang, 0, ',', '.') }}
+
+
+
+
+
+function split_name($name) {
+    $name = trim($name);
+    $last_name = (strpos($name, ' ') === false) ? '' : preg_replace('#.*\s([\w-]*)$#', '$1', $name);
+    $first_name = trim( preg_replace('#'.preg_quote($last_name,'#').'#', '', $name ) );
+    return array($first_name, $last_name);
+}
